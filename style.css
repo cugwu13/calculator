@@ -1,0 +1,127 @@
+@font-face{
+    font-family:'digital-clock-font';
+    src: url('./digital-clocl-font.ttf');
+   }
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+}
+
+.main {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+}
+
+.header {
+    font-family: 'digital-clock-font';
+    font-size: 40px;
+    font-weight: 900;
+    padding: 15px;
+}
+
+.content-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-wrapper {
+    background-color: rgb(125, 192, 231);
+    box-shadow: 0px 10px rgb(84, 122, 145);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 120px auto;
+    gap: 15px;
+    width: 350px;
+    height: 500px;
+    padding: 20px;
+}
+
+.content-wrapper, .green-btn, .yellow-btn, .red-btn, .display {
+    border-radius: 15px;
+}
+
+.green-btn, .yellow-btn, .red-btn {
+    font-weight: 900;
+    font-family: 'Monaco', sans-serif;
+    font-size: 1.7rem;
+    color: white;
+}
+
+.clickable {
+    transition: 0.3s;
+}
+
+.clickable:hover {
+    transform: scale(0.97);
+    filter: brightness(85%);
+}
+
+.green-btn {
+    background-color: rgb(85, 175, 153);
+    box-shadow: 0px 6px rgb(41, 85, 75);
+}
+
+.yellow-btn {
+    background-color: rgb(192, 206, 115);
+    box-shadow: 0px 6px rgb(94, 100, 56)
+}
+
+.red-btn {
+    background-color: rgb(238, 99, 99);
+    box-shadow: 0px 6px rgb(122, 51, 51);
+}
+
+.display {
+    grid-column: 1 / 5;
+    grid-row: 1;
+    background-color: rgb(190, 190, 190);
+    border: 5px solid rgb(22, 127, 141);
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: end;
+    justify-content: space-around;
+}
+
+.expression, .input {
+    margin-right: 10px;
+    font-family: 'digital-clock-font';
+}
+
+.expression {
+    font-size: 20px;
+    height: 20px;
+    margin-top: 5px;
+}
+
+.input {
+    font-size: 36px;
+    height: 40px;
+}
+
+.zero {
+    grid-column: 1 / 3;
+}
+
+.equals {
+    grid-column: 4;
+    grid-row: 5 / 7;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

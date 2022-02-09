@@ -41,10 +41,15 @@ let expressionOperation;
 let operationArray = [];
 
 // Store state of equals button
-equalsButtonClicked = false; 
+equalsButtonClicked = false;
+
+// Handle keydown events
+document.addEventListener('keydown', (e) => {
+    executeKeydownEvent(e);
+});
 
 buttons.forEach(button => button.addEventListener('click', () => {
-    resetAfterEquals(button); ///////////////////
+    resetAfterEquals(button);
     changeSign(button);
     checkButtonType(button);
     checkEqualsButton(button);
@@ -60,13 +65,12 @@ function calculation() {
     let calculate = new Operate(a, b);
     if (operationArray[0] === '+') return Math.floor(calculate.add() * 100) / 100
     else if (operationArray[0] === '-') return Math.floor(calculate.subtract() * 100) / 100
-    else if (operationArray[0] === 'x') return Math.floor(calculate.multiply() * 100) / 100
-    else if (operationArray[0] === '÷') return Math.floor(calculate.divide() * 100) / 100
+    else if (operationArray[0] === 'x' || operationArray[0] === '*') return Math.floor(calculate.multiply() * 100) / 100
+    else if (operationArray[0] === '÷' || operationArray[0] === '/') return Math.floor(calculate.divide() * 100) / 100
 }
 
 // Check if any operations have been input and get operation type
 function checkButtonType(button) {
-    // resetAfterEquals(button);
     if (button.className.match(/add|subtract|multiply|divide/g)) {
         operation = button.innerText;
         expressionOperation = operation;
@@ -126,23 +130,27 @@ function getOperationType() {
 // Perform 'equals' button action
 function executeEqualsButton(button) {
     if (button.className.match("equals")) {
-        // Check if a has been assigned
-        if (a) {
-            expressionDisplay.innerText += ` ${button.innerText}`;
-            b = input;
-            a = parseFloat(a);
-            b = parseFloat(b);
-            let calculate = new Operate(a, b);
-            if (expressionOperation === '+') inputDisplay.innerText = Math.floor(calculate.add() * 100) / 100
-            else if (expressionOperation === '-') inputDisplay.innerText = Math.floor(calculate.subtract() * 100) / 100
-            else if (expressionOperation === 'x') inputDisplay.innerText = Math.floor(calculate.multiply() * 100) / 100
-            else if (expressionOperation === '÷') inputDisplay.innerText = Math.floor(calculate.divide() * 100) / 100
-            input = "";
-            a = inputDisplay.innerText;
-            b = null;
-        } else if (!a) {
-            resetAll();
-        }
+        executeEqualsCalc();
+    }
+}
+
+function executeEqualsCalc() {
+    // Check if a has been assigned
+    if (a) {
+        expressionDisplay.innerText += " =";
+        b = input;
+        a = parseFloat(a);
+        b = parseFloat(b);
+        let calculate = new Operate(a, b);
+        if (expressionOperation === '+') inputDisplay.innerText = Math.floor(calculate.add() * 100) / 100
+        else if (expressionOperation === '-') inputDisplay.innerText = Math.floor(calculate.subtract() * 100) / 100
+        else if (expressionOperation === 'x' || expressionOperation === '*') inputDisplay.innerText = Math.floor(calculate.multiply() * 100) / 100
+        else if (expressionOperation === '÷' || expressionOperation === '/') inputDisplay.innerText = Math.floor(calculate.divide() * 100) / 100
+        input = "";
+        a = inputDisplay.innerText;
+        b = null;
+    } else if (!a) {
+        resetAll();
     }
 }
 
@@ -153,7 +161,7 @@ function checkEqualsButton(button) {
 
 // Reset variables if a digit key is pressed after the equals button is pressed
 function resetAfterEquals(button) {
-    if (equalsButtonClicked === true && !button.className.match(/add|subtract|multiply|divide/g)) {
+    if (equalsButtonClicked === true && !button.className.match(/add|subtract|multiply|divide|pos-neg/g)) {
         a = null;
         b = null;
         input = "";
@@ -172,7 +180,7 @@ function changeSign(button) {
             input = "-" + input;
         }
         inputDisplay.innerText = input;
-        equalsButtonClicked = false; ///////////
+        equalsButtonClicked = false;
     }
 }
 
@@ -197,4 +205,47 @@ function resetAll() {
     operation = "";
     expressionOperation = "";
     operationArray = [];
+}
+
+function executeKeydownEvent(e) {
+    // Handle specific keydown keys
+    if (e.key.match(/[0-9]/g)) {
+        if (equalsButtonClicked === true) {
+            a = null;
+            b = null;
+            input = "";
+            operation = "";
+            expressionOperation = "";
+            operationArray = [];
+        }
+        input += e.key;
+        inputDisplay.innerText = input;
+        populateExpression();
+    } else if (e.key.match(/\+|\-|\*|\//g)) {
+        if (e.key === "*") {
+            operation = "x";
+        } else if (e.key === "/") {
+            operation = "÷";
+        } else operation = e.key;
+        expressionOperation = operation;
+        if (a) {
+            b = input;
+            input = "";
+            populateExpression();
+            inputDisplay.innerText = input;
+        } else {
+            a = input;
+            input = "";
+            populateExpression();
+            inputDisplay.innerText = input;
+        }
+        getOperationType();
+    } else if (e.key === ".") {
+        checkDecimalStatus() ? inputDisplay.innerText = input : input += e.key, inputDisplay.innerText = input;
+    } else if (e.key === "Enter") {
+        populateExpression();
+        executeEqualsCalc();
+    }
+    // Check equals button
+    e.key === "Enter" ? equalsButtonClicked = true : equalsButtonClicked = false;
 }
